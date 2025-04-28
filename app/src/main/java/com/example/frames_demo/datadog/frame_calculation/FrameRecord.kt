@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 internal data class SlowFrameRecord(
     val startTimestampNs: Long,
-    var durationNs: Long,
+    var durationNs: Float,
 ) {
     override fun toString(): String {
         return "${durationNs / NS_IN_MS}ms"

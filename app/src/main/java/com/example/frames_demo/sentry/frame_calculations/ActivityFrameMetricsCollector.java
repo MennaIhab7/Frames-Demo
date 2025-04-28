@@ -129,7 +129,7 @@ public class ActivityFrameMetricsCollector implements FrameMetricsCollectorListe
         );
         final long frameDelayNanos =
                 framesMetrics.getSlowFrameDelayNanos() + framesMetrics.getFrozenFrameDelayNanos();
-        final double frameDelayInSeconds = frameDelayNanos / 1e9d;
+        final double frameDelayInMillis = frameDelayNanos / 1e6d;
         framesMetrics.setTotalFrameCount(totalFrameCount);
 
         span.setData(Constants.FRAMES_LIST, framesMetrics.getFrames());
@@ -140,8 +140,7 @@ public class ActivityFrameMetricsCollector implements FrameMetricsCollectorListe
         Log.d("Sentry", "Slow frames: " + framesMetrics.getSlowFrameCount());
         span.setData(Constants.FRAMES_FROZEN, framesMetrics.getFrozenFrameCount());
         Log.d("Sentry", "Frozen frames: " + framesMetrics.getFrozenFrameCount());
-        //span.setData(Constants.FRAMES_DELAY, frameDelayInSeconds);
-        //Log.d("Sentry", "Frame delay: " + frameDelayInSeconds);
+        span.setData(Constants.FRAMES_DELAY, frameDelayInMillis);
     }
 
 

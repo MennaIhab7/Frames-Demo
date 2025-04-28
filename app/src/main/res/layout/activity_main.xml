@@ -11,10 +11,10 @@
         android:id="@+id/stop_datadog_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:text="Stop Datadog"
-        app:layout_constraintStart_toStartOf="@+id/stop_firebase_btn"
-        app:layout_constraintTop_toBottomOf="@+id/stop_firebase_btn" />
+        app:layout_constraintBottom_toBottomOf="@+id/start_datadog_btn"
+        app:layout_constraintEnd_toEndOf="@+id/stop_firebase_btn"
+        app:layout_constraintStart_toStartOf="@+id/stop_firebase_btn" />
 
     <Button
         android:id="@+id/stop_sentry_btn"
@@ -39,8 +39,9 @@
         android:id="@+id/start_firebase_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Start Firebase"
+        app:layout_constraintEnd_toEndOf="@+id/start_sentry_btn"
         app:layout_constraintStart_toStartOf="@+id/start_sentry_btn"
         app:layout_constraintTop_toBottomOf="@+id/start_sentry_btn" />
 
@@ -50,9 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="80dp"
-        android:layout_marginEnd="108dp"
         android:text="Start Sentry"
-        app:layout_constraintEnd_toStartOf="@+id/stop_sentry_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,20 +59,20 @@
         android:id="@+id/stop_firebase_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="30dp"
         android:text="Stop Firebase"
+        app:layout_constraintBottom_toBottomOf="@+id/start_firebase_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/stop_sentry_btn"
-        app:layout_constraintTop_toBottomOf="@+id/stop_sentry_btn" />
+        app:layout_constraintTop_toTopOf="@+id/start_firebase_btn" />
 
     <Button
         android:id="@+id/start_computation_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="165dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="45dp"
-        android:layout_marginEnd="107dp"
+        android:layout_marginEnd="50dp"
         android:text="Start Heavy Computation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,17 +80,16 @@
 
     <Button
         android:id="@+id/start_animation_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="342dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
         android:text="Start Animation"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.569"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_computation_btn"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/start_computation_btn" />
 
     <ScrollView
         android:layout_width="match_parent"

@@ -18,7 +18,6 @@ public class AppFrameMetricsCalculator {
 
     public AppFrameMetricsCalculator(float refreshRate) {
         this.normalFrameDuration = Math.round(1 / refreshRate * 1000f);
-        Log.d("AppFrameMetricsCalculat", "normalFrameDuration: " + normalFrameDuration);
     }
 
     public static class PerfFrameMetrics {
@@ -27,13 +26,16 @@ public class AppFrameMetricsCalculator {
         int frozenFrames;
         Map<Integer, Integer> slowFramesMap;
         Map<Integer, Integer> frozenFramesMap;
+        int totalDelayDuration;
 
-        public PerfFrameMetrics(int totalFrames, int slowFrames, int frozenFrames, Map<Integer, Integer> slowFramesMap, Map<Integer, Integer> frozenFramesMap) {
+        public PerfFrameMetrics(int totalFrames, int slowFrames, int frozenFrames, Map<Integer, Integer> slowFramesMap, Map<Integer, Integer> frozenFramesMap,int totalDelayDuration) {
             this.totalFrames = totalFrames;
             this.slowFrames = slowFrames;
             this.frozenFrames = frozenFrames;
             this.slowFramesMap = slowFramesMap;
             this.frozenFramesMap = frozenFramesMap;
+            this.totalDelayDuration = totalDelayDuration;
+
         }
 
         public Map<Integer, Integer> getSlowFramesMap() {
@@ -55,6 +57,9 @@ public class AppFrameMetricsCalculator {
         public int getTotalFrames() {
             return totalFrames;
         }
+        public int getTotalDelayDuration() {
+            return totalDelayDuration;
+        }
 
     }
 
@@ -69,6 +74,7 @@ public class AppFrameMetricsCalculator {
         int totalFrames = 0;
         int slowFrames = 0;
         int frozenFrames = 0;
+        int totalDelayDuration = 0;
         Map<Integer, Integer> slowFramesMap = new HashMap<>();
         Map<Integer, Integer> frozenFramesMap = new HashMap<>();
 
@@ -77,26 +83,19 @@ public class AppFrameMetricsCalculator {
             if (frameTimes != null) {
                 for (int i = 0; i < frameTimes.size(); i++) {
                     int frameTime = frameTimes.keyAt(i); // duration
-                    Log.d("AppFrameMetricsCalculat", "Frame time: " + frameTimes.keyAt(i));
+                    totalDelayDuration += ((frameTime - normalFrameDuration)*frameTimes.valueAt(i));
                     int numFrames = frameTimes.valueAt(i); // num of frames with the same duration
-                    Log.d("AppFrameMetricsCalculat", "# frames of that time : " + frameTimes.valueAt(i));
-
                     totalFrames += numFrames;
-                    Log.d("AppFrameMetricsCalculat", "totalFrames: " + totalFrames);
-
                     if (frameTime > Constants.FROZEN_FRAME_TIME) {
                         frozenFrames += numFrames;
                         frozenFramesMap.put(frameTime, numFrames);
-                        Log.d("AppFrameMetricsCalculat", "frozen Frames: " + frozenFrames);
                     } else if (frameTime > normalFrameDuration) {
                         slowFrames += numFrames;
                         slowFramesMap.put(frameTime, numFrames);
-                        Log.d("AppFrameMetricsCalculat", "slow Frames: " + slowFrames);
                     }
                 }
             }
         }
-        // Only incrementMetric if corresponding metric is non-zero.
-        return new PerfFrameMetrics(totalFrames, slowFrames, frozenFrames, slowFramesMap, frozenFramesMap);
+        return new PerfFrameMetrics(totalFrames, slowFrames, frozenFrames, slowFramesMap, frozenFramesMap,totalDelayDuration);
     }
 }

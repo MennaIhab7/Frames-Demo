@@ -33,9 +33,6 @@ class MainActivity : AppCompatActivity() {
     private var isPrevDatadogStopped = true
 
 
-    /**
-     * @noinspection unchecked
-     */
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         this.enableEdgeToEdge()
@@ -90,16 +87,15 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.start_computation_btn).setOnClickListener { performHeavyComputation() }
         findViewById<View>(R.id.start_animation_btn).setOnClickListener { v: View ->
             v.animate()
-                .translationXBy(200f) // Move 200 pixels to the right
-                .rotation(360f) // Rotate 360 degrees
-                .scaleX(1.5f) // Scale X by 1.5
-                .scaleY(1.5f) // Scale Y by 1.5
-                .alpha(0.5f) // Fade out to 50% alpha
-                .setDuration(1000) // Animation duration in milliseconds
+                .translationXBy(200f)
+                .rotation(360f)
+                .scaleX(1.5f)
+                .scaleY(1.5f)
+                .alpha(0.5f)
+                .setDuration(1000)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: android.animation.Animator) {
-                        // Optional: Code to run when the animation finishes
-                        v.alpha = 1f // Reset alpha
+                        v.alpha = 1f
                         v.scaleX = 1f
                         v.scaleY = 1f
                         v.translationX = 0f
@@ -132,16 +128,20 @@ class MainActivity : AppCompatActivity() {
                 resultsText.append("\n$key: $value")
             }
         }
-        resultsText.append("\n\nFrames")
         var i = 0
         checkNotNull(frames)
-        for (frame in frames) {
-            i++
-            resultsText.append("\nFrame $i")
-            resultsText.append("\nis slow: ${frame.isSlow}")
-            resultsText.append("\nis frozen: ${frame.isFrozen}")
-            resultsText.append("\nDuration: ${frame.durationNanos / 1e6} ms")
-            resultsText.append("\nStart time: ${Date(frame.startMillis)}")
+        if(frames.isNotEmpty()) {
+            resultsText.append("\n\nFrames")
+
+            for (frame in frames) {
+                i++
+                resultsText.append("\nFrame $i")
+                resultsText.append("\nis slow: ${frame.isSlow}")
+                resultsText.append("\nis frozen: ${frame.isFrozen}")
+                resultsText.append("\nDuration: ${frame.durationNanos / 1e6} ms")
+                resultsText.append("\nDelay: ${frame.delayNanos / 1e6} ms")
+                resultsText.append("\nStart time: ${Date(frame.startMillis)}")
+            }
         }
     }
 
@@ -156,22 +156,25 @@ class MainActivity : AppCompatActivity() {
             val frozenFramesMap: Map<Int, Int> = frameMetrics.frozenFramesMap
 
             resultsText.append(
-                "\nSlow frames: ${frameMetrics.slowFrames}"
+                "\nTotal Frames received: ${frameMetrics.totalFrames}"
             )
             resultsText.append(
-                "\n\nFrozen frames: ${frameMetrics.frozenFrames}"
+                "\nTotal Slow Frames: ${frameMetrics.slowFrames}"
             )
             resultsText.append(
-                "\nTotal frames: ${frameMetrics.totalFrames}"
+                "\nTotal Frozen Frames: ${frameMetrics.frozenFrames}"
+            )
+            resultsText.append(
+                "\nTotal Delay Duration: ${frameMetrics.totalDelayDuration} ms"
             )
             for ((key, value) in slowFramesMap) {
                 resultsText.append(
-                    "\n Slow frames that took $key ms are ${value} frames"
+                    "\n Slow frames that took $key ms are $value frames"
                 )
             }
             for ((key, value) in frozenFramesMap) {
                 resultsText.append(
-                    " \n Frozen frames that took $key ms are ${value} frames"
+                    " \n Frozen frames that took {$key} ms are $value frames"
                 )
             }
         }
@@ -180,19 +183,24 @@ class MainActivity : AppCompatActivity() {
         resultsText: TextView,
     ) {
         resultsText.text = ""
-        resultsText.append("Total slow frames duration: ${slowFramesListener.getViewPerformanceReport().slowFramesDurationNs/ 1e6}")
-        resultsText.append("\ntotal frames duration that comes: ${slowFramesListener.getViewPerformanceReport().totalFramesDurationNs/ 1e6}")
-        resultsText.append("\nSpan duration: ${slowFramesListener.getViewPerformanceReport().reportDuration}")
+        resultsText.append("Total Frames received: ${slowFramesListener.getViewPerformanceReport().slowFramesCount+slowFramesListener.getViewPerformanceReport().ignoredFramesCount}")
+        resultsText.append("\nTotal Slow Frames duration: ${slowFramesListener.getViewPerformanceReport().slowFramesDurationNs/ 1e6}")
+        resultsText.append("\nTotal Delay duration: ${slowFramesListener.getViewPerformanceReport().totalDelayDuration/1e6}")
 
         val slowFrameRecords = slowFramesListener.getViewPerformanceReport().slowFramesRecords
+        var frozenFramesCount = 0
+        var slowFramesCount = 0
+
         var i = 0
         while (!slowFrameRecords.isEmpty()) {
             i++
             val slowFrameRecord = slowFrameRecords.remove()
             if (slowFrameRecord != null) {
                 if (slowFrameRecord.isFrozen) {
+                    frozenFramesCount++
                     resultsText.append("\nFrozen Frame $i :")
                 } else {
+                    slowFramesCount++
                     resultsText.append("\nSlow Frame $i :")
                 }
             }
@@ -202,6 +210,8 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+        resultsText.append("\nTotal Slow Frames: $slowFramesCount")
+        resultsText.append("\nTotal Frozen Frames: $frozenFramesCount")
     }
 
 

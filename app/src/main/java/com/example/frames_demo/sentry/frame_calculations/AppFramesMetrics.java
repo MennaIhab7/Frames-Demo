@@ -1,5 +1,7 @@
 package com.example.frames_demo.sentry.frame_calculations;
 
+import android.util.Log;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +40,7 @@ final class AppFramesMetrics {
             frozenFrameCount += 1;
         } else if (isSlow) {
             slowFrameDelayNanos += delayNanos;
+            Log.d("Sentry", "Slow frame:"+slowFrameDelayNanos);
             slowFrameCount += 1;
         }
     }

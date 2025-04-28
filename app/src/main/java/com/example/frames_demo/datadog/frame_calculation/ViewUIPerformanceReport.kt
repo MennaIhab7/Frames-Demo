@@ -5,13 +5,13 @@ import java.util.Queue
 
 internal data class ViewUIPerformanceReport(
     var slowFramesRecords: Queue<SlowFrameRecord> = EvictingQueue(),
-    var slowFramesRecordsWithinSpan: Queue<SlowFrameRecord> = EvictingQueue(),
-
-    var slowFramesDurationNs: Long = 0L,
+    var slowFramesCount: Long = 0L,
+    var slowFramesDurationNs: Float = 0.0f,
     var ignoredFramesCount: Long = 0L,
-    var totalFramesDurationNs: Long = 0L,
+    var totalFramesDurationNs: Float = 0.0f,
     var startTimeMs: Long = 0L,
     var endTimeMs: Long = 0L,
+    var totalDelayDuration: Float = 0.0f,
 ) {
     constructor(
         maxSize: Int,

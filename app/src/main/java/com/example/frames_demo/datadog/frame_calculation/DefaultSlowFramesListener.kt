@@ -41,7 +41,7 @@ internal class DefaultSlowFramesListener(
 
     // Called from the background thread
     override fun onFrame(volatileFrameData: FrameData) {
-        val frameDurationNs = volatileFrameData.frameDurationUiNanos
+        val frameDurationNs = volatileFrameData.frameDurationUiNanos.toFloat()
         val frameStartedTimestampNs = volatileFrameData.frameStartNanos
         val report = getViewPerformanceReport()
         Log.d("onFrame", "frameDurationNs: ${frameDurationNs/1e6}")
@@ -60,6 +60,7 @@ internal class DefaultSlowFramesListener(
             }
 
             report.slowFramesDurationNs += frameDurationNs
+            report.totalDelayDuration += (frameDurationNs - expectedDuration)
 
             val previousSlowFrameRecord = report.lastSlowFrameRecord
             val delaySinceLastUpdate = frameStartedTimestampNs -
@@ -79,7 +80,7 @@ internal class DefaultSlowFramesListener(
                 // It's a continuous slow frame – increasing duration
                 previousSlowFrameRecord.durationNs = min(
                     previousSlowFrameRecord.durationNs + frameDurationNs,
-                    configuration.maxSlowFrameThresholdNs - 1
+                    configuration.maxSlowFrameThresholdNs.toFloat() - 1
                 )
             }
         }
