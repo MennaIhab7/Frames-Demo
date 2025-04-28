@@ -1,4 +1,4 @@
-package com.example.sentrydemo;
+package com.example.frames_demo;
 
 import org.junit.Test;
 

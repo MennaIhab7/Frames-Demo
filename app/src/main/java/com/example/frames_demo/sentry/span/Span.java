@@ -1,4 +1,4 @@
-package com.example.sentrydemo.span;
+package com.example.frames_demo.sentry.span;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

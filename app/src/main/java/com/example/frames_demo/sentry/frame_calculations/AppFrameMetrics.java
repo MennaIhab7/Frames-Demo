@@ -1,4 +1,4 @@
-package com.example.sentrydemo.frame_calculations;
+package com.example.frames_demo.sentry.frame_calculations;
 
 public class AppFrameMetrics {
     private final long startMillis;

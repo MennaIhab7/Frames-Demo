@@ -1,12 +1,12 @@
-package com.example.sentrydemo.frame_calculations;
+package com.example.frames_demo.sentry.frame_calculations;
 
 public interface FrameMetricsCollectorListener {
     /**
      * Called when a frame is collected.
      *
      * @param frameStartNanos Start timestamp of a frame in nanoseconds relative to
-     *                        System.nanotime().
-     * @param frameEndNanos   End timestamp of a frame in nanoseconds relative to System.nanotime().
+     *                        System.nano time().
+     * @param frameEndNanos   End timestamp of a frame in nanoseconds relative to System.nano time().
      * @param durationNanos   Duration in nanoseconds of the time spent from the cpu on the main
      *                        thread to create the frame.
      * @param delayNanos      the frame delay, in nanoseconds.

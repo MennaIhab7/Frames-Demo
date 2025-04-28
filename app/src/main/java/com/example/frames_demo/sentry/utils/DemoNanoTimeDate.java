@@ -1,4 +1,4 @@
-package com.example.sentrydemo.utils;
+package com.example.frames_demo.sentry.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

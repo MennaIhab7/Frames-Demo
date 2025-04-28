@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SentryDemo"
+rootProject.name = "frames_demo"
 include(":app")
+ 

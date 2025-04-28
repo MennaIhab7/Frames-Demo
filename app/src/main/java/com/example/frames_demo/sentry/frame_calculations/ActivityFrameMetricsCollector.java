@@ -1,10 +1,10 @@
-package com.example.sentrydemo.frame_calculations;
+package com.example.frames_demo.sentry.frame_calculations;
 
 import android.util.Log;
 
-import com.example.sentrydemo.span.ISpan;
-import com.example.sentrydemo.span.Span;
-import com.example.sentrydemo.utils.Constants;
+import com.example.frames_demo.sentry.span.ISpan;
+import com.example.frames_demo.sentry.span.Span;
+import com.example.frames_demo.sentry.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -106,22 +106,27 @@ public class ActivityFrameMetricsCollector implements FrameMetricsCollectorListe
         int totalFrameCount = framesMetrics.getSlowFrozenFrameCount();
 
         final long nextScheduledFrameNanos = frameMetricsCollector.getLastKnownFrameStartTimeNanos();
+        long durationForInterpolate = spanDurationNanos;
         // nextScheduledFrameNanos might be -1 if no frames have been scheduled for drawing yet
         // e.g. can happen during early app start
         if (nextScheduledFrameNanos != -1) {
             // span ends before frame
-            totalFrameCount += addPendingFrameDelay(
+            var pendingFrames = addPendingFrameDelay(
                     framesMetrics,
                     frameDurationNanos,
                     spanFinishDate,
                     nextScheduledFrameNanos
             );
-            totalFrameCount += interpolateFrameCount(
-                    framesMetrics,
-                    frameDurationNanos,
-                    spanDurationNanos
-            );
+            totalFrameCount += pendingFrames;
+            if (pendingFrames > 0) {
+            durationForInterpolate -= Math.max(spanFinishDate - nextScheduledFrameNanos, 0);
+            }
         }
+        totalFrameCount += interpolateFrameCount(
+                framesMetrics,
+                frameDurationNanos,
+                durationForInterpolate
+        );
         final long frameDelayNanos =
                 framesMetrics.getSlowFrameDelayNanos() + framesMetrics.getFrozenFrameDelayNanos();
         final double frameDelayInSeconds = frameDelayNanos / 1e9d;
@@ -135,8 +140,8 @@ public class ActivityFrameMetricsCollector implements FrameMetricsCollectorListe
         Log.d("Sentry", "Slow frames: " + framesMetrics.getSlowFrameCount());
         span.setData(Constants.FRAMES_FROZEN, framesMetrics.getFrozenFrameCount());
         Log.d("Sentry", "Frozen frames: " + framesMetrics.getFrozenFrameCount());
-        span.setData(Constants.FRAMES_DELAY, frameDelayInSeconds);
-        Log.d("Sentry", "Frame delay: " + frameDelayInSeconds);
+        //span.setData(Constants.FRAMES_DELAY, frameDelayInSeconds);
+        //Log.d("Sentry", "Frame delay: " + frameDelayInSeconds);
     }
 
 

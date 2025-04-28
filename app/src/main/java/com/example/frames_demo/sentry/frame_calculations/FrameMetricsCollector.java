@@ -1,4 +1,4 @@
-package com.example.sentrydemo.frame_calculations;
+package com.example.frames_demo.sentry.frame_calculations;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -97,8 +97,12 @@ public class FrameMetricsCollector implements Application.ActivityLifecycleCallb
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                                     ? window.getContext().getDisplay().getRefreshRate()
                                     : window.getWindowManager().getDefaultDisplay().getRefreshRate();
+                    Log.d("FrameMetricsCollector", "refreshRate: " + refreshRate);
 
                     final long expectedFrameDuration = (long) (oneSecondInNanos / refreshRate);
+                    Log.d("FrameMetricsCollector", "expectedFrameDuration: " + oneSecondInNanos);
+
+                    Log.d("FrameMetricsCollector", "expectedFrameDuration: " + expectedFrameDuration);
 
                     final long cpuDuration = getFrameCpuDuration(frameMetrics);
 
@@ -125,6 +129,8 @@ public class FrameMetricsCollector implements Application.ActivityLifecycleCallb
                     // Therefore we subtract one, because otherwise almost all frames would be slow.
                     final boolean isSlow =
                             isSlow(cpuDuration, (long) ((float) oneSecondInNanos / (refreshRate - 1.0f)));
+
+
                     final boolean isFrozen = isSlow && isFrozen(cpuDuration);
 
                     for (FrameMetricsCollectorListener l : listenerMap.values()) {
@@ -217,14 +223,26 @@ public class FrameMetricsCollector implements Application.ActivityLifecycleCallb
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private long getFrameCpuDuration(final @NotNull FrameMetrics frameMetrics) {
-        // Inspired by JankStats
-        // https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:metrics/metrics-performance/src/main/java/androidx/metrics/performance/JankStatsApi24Impl.kt;l=74-79;drc=1de6215c6bd9e887e3d94556e9ac55cfb7b8c797
-        return frameMetrics.getMetric(FrameMetrics.UNKNOWN_DELAY_DURATION)
+        Log.d("FrameMetricsCollector", "total = "+frameMetrics.getMetric(FrameMetrics.TOTAL_DURATION)/10e6);
+        var f = frameMetrics.getMetric(FrameMetrics.UNKNOWN_DELAY_DURATION)
                 + frameMetrics.getMetric(FrameMetrics.INPUT_HANDLING_DURATION)
                 + frameMetrics.getMetric(FrameMetrics.ANIMATION_DURATION)
                 + frameMetrics.getMetric(FrameMetrics.LAYOUT_MEASURE_DURATION)
                 + frameMetrics.getMetric(FrameMetrics.DRAW_DURATION)
                 + frameMetrics.getMetric(FrameMetrics.SYNC_DURATION);
+        Log.d("FrameMetricsCollector","f= "+f/10e6);
+       return f;
+
+
+
+        // Inspired by JankStats
+        // https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:metrics/metrics-performance/src/main/java/androidx/metrics/performance/JankStatsApi24Impl.kt;l=74-79;drc=1de6215c6bd9e887e3d94556e9ac55cfb7b8c797
+//        return frameMetrics.getMetric(FrameMetrics.UNKNOWN_DELAY_DURATION)
+//                + frameMetrics.getMetric(FrameMetrics.INPUT_HANDLING_DURATION)
+//                + frameMetrics.getMetric(FrameMetrics.ANIMATION_DURATION)
+//                + frameMetrics.getMetric(FrameMetrics.LAYOUT_MEASURE_DURATION)
+//                + frameMetrics.getMetric(FrameMetrics.DRAW_DURATION)
+//                + frameMetrics.getMetric(FrameMetrics.SYNC_DURATION);
     }
 
     @Override
